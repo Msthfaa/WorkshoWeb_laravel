@@ -39,7 +39,7 @@ class EmployeeController extends Controller
         'status' => 'required|string|max:50',
         ]);
         Employee::create($request->all());
-        return redirect()->route('pages.employee.index');
+        return redirect()->route('employee.index');
     }
 
     /**
@@ -47,7 +47,8 @@ class EmployeeController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $employee = Employee::find($id);
+        return view('pages.employee.show', compact('employee'));
     }
 
     /**
@@ -55,7 +56,8 @@ class EmployeeController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $employee = Employee::find($id);
+        return view('pages.employee.update',compact('employee'));
     }
 
     /**
@@ -63,7 +65,26 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'nama_lengkap' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'nomor_telepon' => 'required|string|max:20',
+            'tanggal_lahir' => 'required|date',
+            'alamat' => 'required|string|max:255',
+            'tanggal_masuk' => 'required|date',
+            'status' => 'required|string|max:50',
+        ]);
+        $employee = Employee::findOrFail($id);
+        $employee->update($request->only([
+            'nama_lengkap',
+            'email',
+            'nomor_telepon',
+            'tanggal_lahir',
+            'alamat',
+            'tanggal_masuk',
+            'status',
+        ]));
+        return redirect()->route('employee.index');
     }
 
     /**
@@ -71,6 +92,8 @@ class EmployeeController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $employee = Employee::find($id);
+        $employee->delete();
+        return redirect()->route('employee.index');
     }
 }
