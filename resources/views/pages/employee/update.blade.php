@@ -1,100 +1,87 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Update Employee</title>
-</head>
-<body>
-    <h1>Halaman Update Employee</h1>
+@extends('layouts.master')
+@section('title', 'Edit Karyawan')
 
-    <form action="{{ route('employee.update', $employee->id) }}" method="POST">
-        @csrf
-        @method('PUT')
+@section('content')
+<div class="card shadow-sm">
+    <div class="card-header bg-warning text-dark">
+        <h4 class="mb-0"><i class="bi bi-person-fill-gear me-2"></i> Edit Karyawan: {{ $employee->nama_lengkap }}</h4>
+    </div>
+    <div class="card-body">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <strong>Whoops!</strong> Ada masalah dengan input Anda.<br>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-        <table>
-            <tr>
-                <td><label for="nama_lengkap">Nama Lengkap</label></td>
-                <td>
-                    <input type="text" name="nama_lengkap" id="nama_lengkap"
-                           value="{{ old('nama_lengkap', $employee->nama_lengkap) }}" required>
-                    @error('nama_lengkap')
-                        <span>{{ $message }}</span>
-                    @enderror
-                </td>
-            </tr>
+        <form action="{{ route('employees.update', $employee->id) }}" method="POST">
+            @csrf
+            @method('PUT')
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="nama_lengkap" class="form-label">Nama Lengkap:</label>
+                    <input type="text" name="nama_lengkap" class="form-control" required value="{{ old('nama_lengkap', $employee->nama_lengkap) }}">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" name="email" class="form-control" required value="{{ old('email', $employee->email) }}">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="nomor_telepon" class="form-label">Nomor Telepon:</label>
+                    <input type="text" name="nomor_telepon" class="form-control" value="{{ old('nomor_telepon', $employee->nomor_telepon) }}">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="tanggal_lahir" class="form-label">Tanggal Lahir:</label>
+                    <input type="date" name="tanggal_lahir" class="form-control" required value="{{ old('tanggal_lahir', $employee->tanggal_lahir) }}">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="tanggal_masuk" class="form-label">Tanggal Masuk:</label>
+                    <input type="date" name="tanggal_masuk" class="form-control" required value="{{ old('tanggal_masuk', $employee->tanggal_masuk) }}">
+                </div>
 
-            <tr>
-                <td><label for="email">Email</label></td>
-                <td>
-                    <input type="email" name="email" id="email"
-                           value="{{ old('email', $employee->email) }}" required>
-                    @error('email')
-                        <span>{{ $message }}</span>
-                    @enderror
-                </td>
-            </tr>
-
-            <tr>
-                <td><label for="nomor_telepon">Nomor Telepon</label></td>
-                <td>
-                    <input type="text" name="nomor_telepon" id="nomor_telepon"
-                           value="{{ old('nomor_telepon', $employee->nomor_telepon) }}" required>
-                    @error('nomor_telepon')
-                        <span>{{ $message }}</span>
-                    @enderror
-                </td>
-            </tr>
-
-            <tr>
-                <td><label for="tanggal_lahir">Tanggal Lahir</label></td>
-                <td>
-                    <input type="date" name="tanggal_lahir" id="tanggal_lahir"
-                           value="{{ old('tanggal_lahir', $employee->tanggal_lahir) }}" required>
-                    @error('tanggal_lahir')
-                        <span>{{ $message }}</span>
-                    @enderror
-                </td>
-            </tr>
-
-            <tr>
-                <td><label for="alamat">Alamat</label></td>
-                <td>
-                    <input type="text" name="alamat" id="alamat"
-                           value="{{ old('alamat', $employee->alamat) }}" required>
-                    @error('alamat')
-                        <span>{{ $message }}</span>
-                    @enderror
-                </td>
-            </tr>
-
-            <tr>
-                <td><label for="tanggal_masuk">Tanggal Masuk</label></td>
-                <td>
-                    <input type="date" name="tanggal_masuk" id="tanggal_masuk"
-                           value="{{ old('tanggal_masuk', $employee->tanggal_masuk) }}" required>
-                    @error('tanggal_masuk')
-                        <span>{{ $message }}</span>
-                    @enderror
-                </td>
-            </tr>
-
-            <tr>
-                <td><label for="status">Status</label></td>
-                <td>
-                    <select name="status" id="status" required>
-                        <option value="Aktif" {{ old('status', $employee->status) == 'Aktif' ? 'selected' : '' }}>Aktif</option>
-                        <option value="Tidak Aktif" {{ old('status', $employee->status) == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
+                <div class="col-md-6 mb-3">
+                    <label for="departemen_id" class="form-label">Departemen:</label>
+                    <select name="departemen_id" class="form-select" required>
+                        <option value="">Pilih Departemen</option>
+                        @foreach ($departements as $departement)
+                            <option value="{{ $departement->id }}" {{ old('departemen_id', $employee->departemen_id) == $departement->id ? 'selected' : '' }}>
+                                {{ $departement->nama_departemen }}
+                            </option>
+                        @endforeach
                     </select>
-                    @error('status')
-                        <span>{{ $message }}</span>
-                    @enderror
-                </td>
-            </tr>
-        </table>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="jabatan_id" class="form-label">Jabatan:</label>
+                    <select name="jabatan_id" class="form-select" required>
+                        <option value="">Pilih Jabatan</option>
+                        @foreach ($positions as $position)
+                            <option value="{{ $position->id }}" {{ old('jabatan_id', $employee->jabatan_id) == $position->id ? 'selected' : '' }}>
+                                {{ $position->nama_jabatan }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="status" class="form-label">Status:</label>
+                    <select name="status" class="form-select" required>
+                        <option value="aktif" {{ old('status', $employee->status) == 'aktif' ? 'selected' : '' }}>Aktif</option>
+                        <option value="nonaktif" {{ old('status', $employee->status) == 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
+                    </select>
+                </div>
+            </div>
 
-        <button type="submit">Update Karyawan</button>
-    </form>
-</body>
-</html>
+            <div class="mb-4">
+                <label for="alamat" class="form-label">Alamat:</label>
+                <textarea name="alamat" class="form-control" rows="3" required>{{ old('alamat', $employee->alamat) }}</textarea>
+            </div>
+
+            <a href="{{ route('employees.index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Kembali</a>
+            <button type="submit" class="btn btn-warning"><i class="bi bi-arrow-clockwise"></i> Perbarui Data</button>
+        </form>
+    </div>
+</div>
+@endsection
